@@ -1,0 +1,57 @@
+h1. Menu
+
+h2. Overview
+
+This is a library that eases the pain of AIR menus by introducing the concept of item groups.
+
+h2. Features
+
+* one-line menu item instantiation
+* menu separator as its own class
+* menu automatically inserts separators between groups
+* modifying groups automatically redraws menu
+
+h2. Usage
+
+h3. MenuItem
+
+Instantiating a simple item.
+
+<pre>
+new MenuItem('New');
+</pre>
+
+Instantiating an item that has a hotkey.
+
+<pre>
+new MenuItem('New', [Keyboard.COMMAND], 'n');
+</pre>
+
+h3. MenuGroup
+
+Instantiating a group.
+
+<pre>
+group = new MenuGroup();
+
+newItem = group.addItem(new MenuItem('New', [Keyboard.COMMAND], 'n');
+openItem = group.addItem(new MenuItem('Open', [Keyboard.COMMAND], 'o');
+saveItem = group.addItem(new MenuItem('Save', [Keyboard.COMMAND], 's');
+</pre>
+
+h3. SeparatedMenu
+
+Using SeparatedMenu to recreate OSX's Window menu.
+
+<pre>
+menu = new SeparatedMenu();
+
+// group with minimize and zoom items
+singleWindowGroup = menu.addGroup(new SingleWindowMenuGroup());
+
+// group with bring all to front item
+multiWindowGroup = menu.addGroup(new MultiWindowMenuGroup());
+
+// group with an item for each open window
+windowListGroup = menu.addGroup(new WindowListMenuGroup());
+</pre>
