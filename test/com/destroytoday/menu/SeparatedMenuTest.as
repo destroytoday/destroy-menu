@@ -1,7 +1,9 @@
 package com.destroytoday.menu
 {
-	import com.destroytoday.support.InvisibleMenuGroup;
-	import com.destroytoday.support.OneItemMenuGroup;
+	import com.destroytoday.invalidation.InvalidationManager;
+	import com.destroytoday.support.TestInvisibleMenuGroup;
+	import com.destroytoday.support.TestOneItemMenuGroup;
+	import com.destroytoday.support.TestValidateCountingSeparatedMenu;
 	
 	import flash.display.NativeMenuItem;
 	import flash.events.Event;
@@ -17,6 +19,7 @@ package com.destroytoday.menu
 	import org.hamcrest.core.not;
 	import org.hamcrest.object.equalTo;
 	import org.hamcrest.object.notNullValue;
+	import org.hamcrest.object.strictlyEqualTo;
 	import org.osflash.signals.Signal;
 
 	public class SeparatedMenuTest
@@ -38,8 +41,6 @@ package com.destroytoday.menu
 		[Before(async, timeout=5000)]
 		public function setUp():void
 		{
-			menu = new SeparatedMenu();
-			
 			Async.proceedOnEvent(this, prepare(Signal), Event.COMPLETE);
 		}
 		
@@ -58,12 +59,15 @@ package com.destroytoday.menu
 		[Test]
 		public function menu_instantiates_item_group_list_if_not_exists():void
 		{
+			menu = new SeparatedMenu();
+			
 			assertThat(menu.groupList, notNullValue());
 		}
 		
 		[Test]
 		public function menu_can_add_group():void
 		{
+			menu = new SeparatedMenu();
 			var group:IMenuGroup = new MenuGroup();
 			
 			menu.addGroup(group);
@@ -74,6 +78,7 @@ package com.destroytoday.menu
 		[Test]
 		public function adding_group_returns_group():void
 		{
+			menu = new SeparatedMenu();
 			var group:IMenuGroup = new MenuGroup();
 			
 			assertThat(menu.addGroup(group), equalTo(group));
@@ -82,6 +87,7 @@ package com.destroytoday.menu
 		[Test]
 		public function adding_group_dispatches_group_list_changed():void
 		{
+			menu = new SeparatedMenu();
 			menu.groupListChanged = nice(Signal);
 			
 			menu.addGroup(new MenuGroup());
@@ -92,6 +98,7 @@ package com.destroytoday.menu
 		[Test]
 		public function adding_duplicate_group_silently_fails():void
 		{
+			menu = new SeparatedMenu();
 			var group:IMenuGroup = new MenuGroup();
 			menu.addGroup(group);
 			
@@ -105,6 +112,7 @@ package com.destroytoday.menu
 		[Test]
 		public function menu_can_remove_group():void
 		{
+			menu = new SeparatedMenu();
 			var group:IMenuGroup = new MenuGroup();
 			
 			menu.addGroup(group);
@@ -116,6 +124,7 @@ package com.destroytoday.menu
 		[Test]
 		public function removing_group_returns_group():void
 		{
+			menu = new SeparatedMenu();
 			var group:IMenuGroup = new MenuGroup();
 
 			assertThat(menu.removeGroup(group), equalTo(group));
@@ -124,6 +133,7 @@ package com.destroytoday.menu
 		[Test]
 		public function removing_non_existant_group_silently_fails():void
 		{
+			menu = new SeparatedMenu();
 			menu.groupListChanged = nice(Signal);
 			
 			menu.removeGroup(new MenuGroup());
@@ -134,8 +144,10 @@ package com.destroytoday.menu
 		[Test]
 		public function menu_adds_separator_between_groups():void
 		{
-			menu.addGroup(new OneItemMenuGroup());
-			menu.addGroup(new OneItemMenuGroup());
+			menu = new SeparatedMenu();
+			
+			menu.addGroup(new TestOneItemMenuGroup());
+			menu.addGroup(new TestOneItemMenuGroup());
 			
 			assertThat(menu.getItemAt(1).isSeparator);
 		}
@@ -143,7 +155,8 @@ package com.destroytoday.menu
 		[Test]
 		public function menu_adds_item_when_adding_group_with_item():void
 		{
-			var group:OneItemMenuGroup = menu.addGroup(new OneItemMenuGroup()) as OneItemMenuGroup;
+			menu = new SeparatedMenu();
+			var group:TestOneItemMenuGroup = menu.addGroup(new TestOneItemMenuGroup()) as TestOneItemMenuGroup;
 			
 			assertThat(menu.items, hasItem(group.item));
 		}
@@ -151,6 +164,7 @@ package com.destroytoday.menu
 		[Test]
 		public function menu_adds_item_when_group_adds_item():void
 		{
+			menu = new SeparatedMenu();
 			var group:IMenuGroup = menu.addGroup(new MenuGroup());
 			var item:NativeMenuItem = group.addItem(new NativeMenuItem());
 			
@@ -160,7 +174,8 @@ package com.destroytoday.menu
 		[Test]
 		public function menu_removes_item_when_group_removes_item():void
 		{
-			var group:OneItemMenuGroup = menu.addGroup(new OneItemMenuGroup()) as OneItemMenuGroup;
+			menu = new SeparatedMenu();
+			var group:TestOneItemMenuGroup = menu.addGroup(new TestOneItemMenuGroup()) as TestOneItemMenuGroup;
 			var item:NativeMenuItem = group.removeItem(group.item);
 			
 			assertThat(menu.items, not(hasItem(item)));
@@ -169,6 +184,7 @@ package com.destroytoday.menu
 		[Test]
 		public function menu_adds_items_when_group_replaces_item_list():void
 		{
+			menu = new SeparatedMenu();
 			var group:IMenuGroup = menu.addGroup(new MenuGroup());
 			var item0:NativeMenuItem = new NativeMenuItem();
 			var item1:NativeMenuItem = new NativeMenuItem();
@@ -182,7 +198,9 @@ package com.destroytoday.menu
 		[Test]
 		public function menu_ignores_invisible_groups():void
 		{
-			menu.addGroup(new InvisibleMenuGroup());
+			menu = new SeparatedMenu();
+			
+			menu.addGroup(new TestInvisibleMenuGroup());
 			
 			assertThat(menu.numItems, equalTo(0));
 		}
@@ -190,7 +208,8 @@ package com.destroytoday.menu
 		[Test]
 		public function menu_removes_items_when_group_becomes_invisible():void
 		{
-			var group:IMenuGroup = menu.addGroup(new OneItemMenuGroup());
+			menu = new SeparatedMenu();
+			var group:IMenuGroup = menu.addGroup(new TestOneItemMenuGroup());
 			
 			group.visible = false;
 			
@@ -200,11 +219,52 @@ package com.destroytoday.menu
 		[Test]
 		public function menu_adds_items_when_group_becomes_visible():void
 		{
-			var group:IMenuGroup = menu.addGroup(new InvisibleMenuGroup());
+			menu = new SeparatedMenu();
+			var group:IMenuGroup = menu.addGroup(new TestInvisibleMenuGroup());
 			
 			group.visible = true;
 			
 			assertThat(menu.numItems, equalTo(group.numItems));
+		}
+		
+		[Test]
+		public function invalidation_manager_constructor_argument_populates_invalidation_manager():void
+		{
+			var invalidationManager:InvalidationManager = new InvalidationManager();
+			menu = new SeparatedMenu(invalidationManager);
+			
+			assertThat(menu.invalidationManager, strictlyEqualTo(invalidationManager));
+		}
+		
+		[Test]
+		public function menu_without_invalidation_manager_does_not_use_invalidation():void
+		{
+			menu = new TestValidateCountingSeparatedMenu();
+			var mockMenu:TestValidateCountingSeparatedMenu = menu as TestValidateCountingSeparatedMenu;
+			var group:IMenuGroup = new MenuGroup();
+			
+			menu.groupList = [new MenuGroup()];
+			menu.addGroup(group);
+			menu.removeGroup(group);
+
+			assertThat(mockMenu.validateCount, equalTo(3));
+		}
+		
+		[Test(async, timeout=1000)]
+		public function menu_with_invalidation_manager_uses_invalidation():void
+		{
+			menu = new TestValidateCountingSeparatedMenu(new InvalidationManager());
+			var mockMenu:TestValidateCountingSeparatedMenu = menu as TestValidateCountingSeparatedMenu;
+			var group:IMenuGroup = new MenuGroup();
+			
+			menu.groupList = [new MenuGroup()];
+			menu.addGroup(group);
+			menu.removeGroup(group);
+
+			Async.delayCall(this, function():void
+			{
+				assertThat(mockMenu.validateCount, equalTo(1));
+			}, 500);
 		}
 	}
 }

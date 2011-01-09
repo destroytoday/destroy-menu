@@ -4,11 +4,11 @@ package com.destroytoday.support
 	
 	import flash.display.NativeMenuItem;
 	
-	public class OneItemMenuGroup extends MenuGroup
+	public class TestOneItemMenuGroup extends MenuGroup
 	{
 		public var item:NativeMenuItem;
 		
-		public function OneItemMenuGroup()
+		public function TestOneItemMenuGroup()
 		{
 			item = addItem(new NativeMenuItem("Item"));
 		}

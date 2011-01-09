@@ -1,8 +1,11 @@
 package com.destroytoday.menu
 {
+	import com.destroytoday.invalidation.IInvalidatable;
+	import com.destroytoday.invalidation.IInvalidationManager;
+	
 	import org.osflash.signals.Signal;
 
-	public class SeparatedMenu extends Menu
+	public class SeparatedMenu extends Menu implements IInvalidatable
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -30,14 +33,25 @@ package com.destroytoday.menu
 		
 		protected var _groupList:Array;
 		
+		protected var _invalidationManager:IInvalidationManager;
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Flags
+		//
+		//--------------------------------------------------------------------------
+		
+		protected var dirtyGroupListFlag:Boolean;
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
 		//
 		//--------------------------------------------------------------------------
 		
-		public function SeparatedMenu()
+		public function SeparatedMenu(invalidationManager:IInvalidationManager = null)
 		{
+			_invalidationManager = invalidationManager;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -57,35 +71,18 @@ package com.destroytoday.menu
 			
 			_groupList = value;
 			
-			updateItems();
-			groupListChanged.dispatch();
+			dirtyGroupListFlag = true;
+			invalidate();
 		}
 		
-		//--------------------------------------------------------------------------
-		//
-		//  Protected Methods
-		//
-		//--------------------------------------------------------------------------
-		
-		protected function updateItems():void
+		public function get invalidationManager():IInvalidationManager
 		{
-			var itemList:Array = [];
-			
-			for each (var group:IMenuGroup in groupList)
-			{
-				var visible:Boolean = (group.visible && group.itemList.length > 0);
-				
-				if (visible && itemList.length > 0)
-				{
-					itemList = itemList.concat(new MenuSeparator(), group.itemList);
-				}
-				else if (visible)
-				{
-					itemList = itemList.concat(group.itemList);
-				}
-			}
-
-			items = itemList;
+			return _invalidationManager;
+		}
+		
+		public function set invalidationManager(value:IInvalidationManager):void
+		{
+			_invalidationManager = value;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -103,8 +100,8 @@ package com.destroytoday.menu
 				group.itemListChanged.add(groupItemListChangedHandler);
 				group.visibleChanged.add(groupVisibleChangedHandler);
 
-				updateItems();
-				groupListChanged.dispatch();
+				dirtyGroupListFlag = true;
+				invalidate();
 			}
 			
 			return group;
@@ -121,11 +118,57 @@ package com.destroytoday.menu
 				group.itemListChanged.remove(groupItemListChangedHandler);
 				group.visibleChanged.remove(groupVisibleChangedHandler);
 				
-				updateItems();
-				groupListChanged.dispatch();
+				dirtyGroupListFlag = true;
+				invalidate();
 			}
 			
 			return group;
+		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Invalidation
+		//
+		//--------------------------------------------------------------------------
+		
+		public function invalidate():void
+		{
+			if (invalidationManager)
+			{
+				invalidationManager.invalidateObject(this);
+			}
+			else
+			{
+				validate();
+			}
+		}
+		
+		public function validate():void
+		{
+			if (dirtyGroupListFlag)
+			{
+				dirtyGroupListFlag = false;
+				
+				var itemList:Array = [];
+			
+				for each (var group:IMenuGroup in groupList)
+				{
+					var visible:Boolean = (group.visible && group.numItems > 0);
+					
+					if (visible && itemList.length > 0)
+					{
+						itemList = itemList.concat(new MenuSeparator(), group.itemList);
+					}
+					else if (visible)
+					{
+						itemList = itemList.concat(group.itemList);
+					}
+				}
+	
+				items = itemList;
+				
+				groupListChanged.dispatch();
+			}
 		}
 		
 		//--------------------------------------------------------------------------
@@ -136,12 +179,14 @@ package com.destroytoday.menu
 		
 		protected function groupItemListChangedHandler():void
 		{
-			updateItems();
+			dirtyGroupListFlag = true;
+			invalidate();
 		}
 		
 		protected function groupVisibleChangedHandler():void
 		{
-			updateItems();
+			dirtyGroupListFlag = true;
+			invalidate();
 		}
 	}
 }

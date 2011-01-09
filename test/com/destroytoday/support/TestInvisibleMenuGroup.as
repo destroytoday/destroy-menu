@@ -4,9 +4,9 @@ package com.destroytoday.support
 	
 	import flash.display.NativeMenuItem;
 	
-	public class InvisibleMenuGroup extends MenuGroup
+	public class TestInvisibleMenuGroup extends MenuGroup
 	{
-		public function InvisibleMenuGroup()
+		public function TestInvisibleMenuGroup()
 		{
 			addItem(new NativeMenuItem("Item 0"));
 			addItem(new NativeMenuItem("Item 1"));
