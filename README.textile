@@ -34,9 +34,9 @@ Instantiating a group.
 <pre>
 group = new MenuGroup();
 
-newItem = group.addItem(new MenuItem('New', [Keyboard.COMMAND], 'n');
-openItem = group.addItem(new MenuItem('Open', [Keyboard.COMMAND], 'o');
-saveItem = group.addItem(new MenuItem('Save', [Keyboard.COMMAND], 's');
+newItem = group.addItem(new MenuItem('New', [Keyboard.COMMAND], 'n'));
+openItem = group.addItem(new MenuItem('Open', [Keyboard.COMMAND], 'o'));
+saveItem = group.addItem(new MenuItem('Save', [Keyboard.COMMAND], 's'));
 </pre>
 
 h3. SeparatedMenu
