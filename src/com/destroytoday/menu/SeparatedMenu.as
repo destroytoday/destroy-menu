@@ -51,7 +51,7 @@ package com.destroytoday.menu
 		
 		public function SeparatedMenu(invalidationManager:IInvalidationManager = null)
 		{
-			_invalidationManager = invalidationManager;
+			this.invalidationManager = invalidationManager;
 		}
 		
 		//--------------------------------------------------------------------------

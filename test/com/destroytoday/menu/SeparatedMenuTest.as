@@ -15,7 +15,6 @@ package com.destroytoday.menu
 	import org.flexunit.async.Async;
 	import org.hamcrest.assertThat;
 	import org.hamcrest.collection.hasItem;
-	import org.hamcrest.collection.hasItems;
 	import org.hamcrest.core.not;
 	import org.hamcrest.object.equalTo;
 	import org.hamcrest.object.notNullValue;
@@ -192,7 +191,9 @@ package com.destroytoday.menu
 			
 			group.itemList = [item0, item1, item2];
 			
-			assertThat(menu.items, hasItems(item0, item1, item2));
+			assertThat(menu.items, hasItem(item0));
+			assertThat(menu.items, hasItem(item1));
+			assertThat(menu.items, hasItem(item2));
 		}
 		
 		[Test]

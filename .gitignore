@@ -6,6 +6,7 @@
 .project
 .settings
 .FlexUnitSettings
-bin
-src/FlexUnitApplication-app.xml
-src/FlexUnitApplication.mxml
+bin/*.swf
+bin/*.xml
+bin-debug
+report

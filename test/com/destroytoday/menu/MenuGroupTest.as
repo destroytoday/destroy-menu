@@ -11,7 +11,6 @@ package com.destroytoday.menu
 	import org.hamcrest.assertThat;
 	import org.hamcrest.collection.arrayWithSize;
 	import org.hamcrest.collection.hasItem;
-	import org.hamcrest.core.isA;
 	import org.hamcrest.core.not;
 	import org.hamcrest.object.equalTo;
 	import org.hamcrest.object.notNullValue;
@@ -56,7 +55,7 @@ package com.destroytoday.menu
 		[Test]
 		public function group_implements_interface():void
 		{
-			assertThat(group, isA(IMenuGroup));
+			assertThat(group is IMenuGroup);
 		}
 		
 		[Test]
