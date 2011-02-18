@@ -41,7 +41,7 @@ package com.destroytoday.menu
 		//
 		//--------------------------------------------------------------------------
 		
-		protected var dirtyGroupListFlag:Boolean;
+		protected var isGroupListDirty:Boolean;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -71,7 +71,7 @@ package com.destroytoday.menu
 			
 			_groupList = value;
 			
-			dirtyGroupListFlag = true;
+			isGroupListDirty = true;
 			invalidate();
 		}
 		
@@ -100,7 +100,7 @@ package com.destroytoday.menu
 				group.itemListChanged.add(groupItemListChangedHandler);
 				group.visibleChanged.add(groupVisibleChangedHandler);
 
-				dirtyGroupListFlag = true;
+				isGroupListDirty = true;
 				invalidate();
 			}
 			
@@ -118,7 +118,7 @@ package com.destroytoday.menu
 				group.itemListChanged.remove(groupItemListChangedHandler);
 				group.visibleChanged.remove(groupVisibleChangedHandler);
 				
-				dirtyGroupListFlag = true;
+				isGroupListDirty = true;
 				invalidate();
 			}
 			
@@ -145,9 +145,9 @@ package com.destroytoday.menu
 		
 		public function validate():void
 		{
-			if (dirtyGroupListFlag)
+			if (isGroupListDirty)
 			{
-				dirtyGroupListFlag = false;
+				isGroupListDirty = false;
 				
 				var itemList:Array = [];
 			
@@ -179,13 +179,13 @@ package com.destroytoday.menu
 		
 		protected function groupItemListChangedHandler():void
 		{
-			dirtyGroupListFlag = true;
+			isGroupListDirty = true;
 			invalidate();
 		}
 		
 		protected function groupVisibleChangedHandler():void
 		{
-			dirtyGroupListFlag = true;
+			isGroupListDirty = true;
 			invalidate();
 		}
 	}
